@@ -5,7 +5,10 @@ const { combine, timestamp, printf, colorize, errors } = winston.format;
 
 // Custom log format
 const logFormat = printf(({ level, message, timestamp, ...metadata }) => {
-  const formattedDate = format(new Date(timestamp), 'yyyy-MM-dd HH:mm:ss');
+  const formattedDate = format(
+    typeof timestamp === 'string' ? new Date(timestamp) : timestamp,
+    'yyyy-MM-dd HH:mm:ss'
+  );
   let msg = `${formattedDate} [${level}]: ${message}`;
   
   if (metadata.stack) {
@@ -44,11 +47,6 @@ export const logger = winston.createLogger({
     })
   ]
 });
-
-// Development logging
-if (process.env.NODE_ENV !== 'production') {
-  logger.debug('Logging initialized at debug level');
-}
 
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
 

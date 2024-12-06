@@ -22,6 +22,8 @@ export interface Challenge {
   metadata?: Record<string, any>;
 }
 
+export type HookEvent = keyof PluginHooks;
+
 export interface PluginHooks {
   beforeCaptchaGenerate?: (options: CaptchaRenderOptions) => Promise<CaptchaRenderOptions>;
   afterCaptchaGenerate?: (captcha: CaptchaGenerationResult) => Promise<CaptchaGenerationResult>;

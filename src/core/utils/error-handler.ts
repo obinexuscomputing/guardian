@@ -1,13 +1,5 @@
 import { logger } from '../config/logger';
-
-export enum ErrorCode {
-  VALIDATION_ERROR = 'VALIDATION_ERROR',
-  PLUGIN_ERROR = 'PLUGIN_ERROR',
-  CAPTCHA_GENERATION_ERROR = 'CAPTCHA_GENERATION_ERROR',
-  AUTH_ERROR = 'AUTH_ERROR',
-  RATE_LIMIT_ERROR = 'RATE_LIMIT_ERROR',
-  INTERNAL_ERROR = 'INTERNAL_ERROR'
-}
+import { ErrorCode } from '../types/error';
 
 export interface ErrorMetadata {
   [key: string]: any;
@@ -21,9 +13,9 @@ export class GuardianError extends Error {
 
   constructor(
     message: string,
-    code: ErrorCode = ErrorCode.INTERNAL_ERROR,
-    statusCode: number = 500,
-    isOperational: boolean = true,
+    code = ErrorCode.INTERNAL_ERROR,
+    statusCode = 500,
+    isOperational = true,
     metadata: ErrorMetadata = {}
   ) {
     super(message);
@@ -40,6 +32,12 @@ export class GuardianError extends Error {
 export class ValidationError extends GuardianError {
   constructor(message: string, metadata?: ErrorMetadata) {
     super(message, ErrorCode.VALIDATION_ERROR, 400, true, metadata);
+  }
+}
+
+export class ImageProcessingError extends GuardianError {
+  constructor(message: string, metadata?: ErrorMetadata) {
+    super(message, ErrorCode.IMAGE_PROCESSING_ERROR, 500, true, metadata);
   }
 }
 
@@ -85,7 +83,6 @@ export function handleError(error: Error | GuardianError): void {
     });
     
     if (process.env.NODE_ENV === 'production') {
-      // Implement your crash handling/restart logic here
       process.exit(1);
     }
   }
@@ -101,24 +98,3 @@ process.on('unhandledRejection', (reason: any) => {
   logger.error('Unhandled Rejection:', reason);
   handleError(reason instanceof Error ? reason : new Error(String(reason)));
 });
-
-// Helper function to safely execute async operations
-export async function safeExecute<T>(
-  operation: () => Promise<T>,
-  errorMessage: string
-): Promise<T> {
-  try {
-    return await operation();
-  } catch (error) {
-    if (error instanceof GuardianError) {
-      throw error;
-    }
-    throw new GuardianError(
-      errorMessage,
-      ErrorCode.INTERNAL_ERROR,
-      500,
-      true,
-      { originalError: error instanceof Error ? error.message : String(error) }
-    );
-  }
-}

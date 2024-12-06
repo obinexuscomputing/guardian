@@ -1,6 +1,6 @@
 import sharp from 'sharp';
-import { createCanvas, loadImage, Canvas } from 'canvas';
-import { GuardianError } from './error-handler';
+import { Canvas, createCanvas, loadImage, CanvasRenderingContext2D } from 'canvas';
+import { ImageProcessingError } from './error-handler';
 import { logger } from '../config/logger';
 
 export class ImageProcessor {
@@ -39,10 +39,9 @@ export class ImageProcessor {
         .toBuffer();
     } catch (error) {
       logger.error('Image processing failed:', error);
-      throw new GuardianError(
+      throw new ImageProcessingError(
         'Failed to process image',
-        'IMAGE_PROCESSING_ERROR',
-        500
+        { originalError: error instanceof Error ? error.message : String(error) }
       );
     }
   }
