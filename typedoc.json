@@ -1,19 +1,19 @@
 {
-    "entryPoints": ["src/index.ts"],
-    "out": "docs",
-    "excludePrivate": true,
-    "excludeProtected": true,
-    "excludeExternals": true,
-    "theme": "default",
-    "name": "GUARDIAN Documentation",
-    "readme": "README.md",
-    "includeVersion": true,
-    "categorizeByGroup": true,
-    "categoryOrder": [
-      "Core",
-      "CAPTCHA",
-      "ML",
-      "Plugins",
-      "*"
-    ]
-  }
+  "entryPoints": ["src/index.ts"],
+  "out": "docs",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "theme": "default",
+  "name": "GUARDIAN Documentation",
+  "readme": "README.md",
+  "includeVersion": true,
+  "categorizeByGroup": true,
+  "categoryOrder": [
+    "Core",
+    "CAPTCHA",
+    "ML",
+    "Plugins",
+    "*"
+  ]
+}

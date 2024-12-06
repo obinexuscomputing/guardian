@@ -50,14 +50,14 @@ const dependencies = {
   ],
   // TypeScript and types
   typescript: [
+    '@types/node',
     'typescript@5.0.4',
     'tslib@2.5.0',
     'ts-node@10.9.1',
     'ts-node-dev@2.0.0',
     '@types/node@18.16.3',
     '@types/jest@29.5.1',
-    '@types/benchmark@2.1.2',
-    '@types/node'
+    '@types/benchmark@2.1.2'
   ],
   // Testing
   testing: [
