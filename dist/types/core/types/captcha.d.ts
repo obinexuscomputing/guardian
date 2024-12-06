@@ -1,4 +1,5 @@
 export type ImageFormat = 'png' | 'jpeg' | 'jpg';
+export type DifficultyLevel = 'easy' | 'medium' | 'hard';
 export interface TextOptions {
     font?: string;
     size?: number;
@@ -25,6 +26,7 @@ export interface CaptchaRenderOptions {
     noiseLevel?: number;
     distortionLevel?: number;
     format?: ImageFormat;
+    difficulty?: DifficultyLevel;
 }
 export interface CaptchaGenerationResult {
     image: Buffer;
@@ -34,7 +36,7 @@ export interface CaptchaGenerationResult {
         width: number;
         height: number;
         generatedAt: Date;
-        difficulty: string;
+        difficulty: DifficultyLevel;
         renderTime: number;
     };
 }

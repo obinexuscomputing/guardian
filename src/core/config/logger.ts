@@ -3,12 +3,27 @@ import { format } from 'date-fns';
 
 const { combine, timestamp, printf, colorize, errors } = winston.format;
 
+interface LogEntry {
+  level: string;
+  message: string;
+  timestamp: string | number | Date;
+  stack?: string;
+  [key: string]: any;
+}
+
 // Custom log format
-const logFormat = printf(({ level, message, timestamp, ...metadata }) => {
-  const formattedDate = format(
-    typeof timestamp === 'string' ? new Date(timestamp) : timestamp,
-    'yyyy-MM-dd HH:mm:ss'
-  );
+const logFormat = printf(({ level, message, timestamp, ...metadata }: LogEntry) => {
+  let formattedDate: string;
+  
+  try {
+    formattedDate = format(
+      new Date(timestamp),
+      'yyyy-MM-dd HH:mm:ss'
+    );
+  } catch {
+    formattedDate = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+  }
+
   let msg = `${formattedDate} [${level}]: ${message}`;
   
   if (metadata.stack) {

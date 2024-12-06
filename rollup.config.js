@@ -30,7 +30,7 @@ const commonPlugins = [
   typescript({
     tsconfig: './tsconfig.json',
     declaration: true,
-    declarationDir: './dist/types'
+    declarationDir: 'dist/types'
   })
 ];
 
@@ -56,14 +56,5 @@ export default defineConfig([
     },
     external,
     plugins: [...commonPlugins, terser()]
-  },
-  {
-    input: './dist/types/index.d.ts',
-    output: {
-      file: 'dist/index.d.ts',
-      format: 'esm'
-    },
-    plugins: [dts()],
-    external
   }
 ]);

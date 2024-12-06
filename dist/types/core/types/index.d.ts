@@ -1,3 +1,3 @@
 export * from './captcha';
-export * from './errors';
+export * from './error';
 export * from './plugin.interface';
