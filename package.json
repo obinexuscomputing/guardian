@@ -7,12 +7,24 @@
     "types": "dist/index.d.ts",
     "files": [
       "dist"
-    ],
-    "scripts": {
+    ], "scripts": {
       "build": "rollup -c",
       "dev": "rollup -c -w",
-      "clean": "rimraf dist"
+      "test": "jest",
+      "test:watch": "jest --watch",
+      "test:coverage": "jest --coverage",
+      "lint": "eslint . --ext .ts",
+      "lint:fix": "eslint . --ext .ts --fix",
+      "format": "prettier --write \"src/**/*.ts\"",
+      "type-check": "tsc --noEmit",
+      "prepare": "husky install",
+      "precommit": "lint-staged"
     },
+    "lint-staged": {
+      "*.ts": [
+        "eslint --fix",
+        "prettier --write"
+      ],
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-json": "^6.1.0",
