@@ -1,7 +1,7 @@
 // src/services/captcha/renderer.ts
 
 import { Canvas, createCanvas, CanvasRenderingContext2D } from 'canvas';
-import { CaptchaRenderOptions, ImageFormat } from '@core/types';
+import { BackgroundOptions, CaptchaRenderOptions, ImageFormat, TextOptions } from '@core/types';
 
 export class CaptchaRenderer {
   private canvas: Canvas;
