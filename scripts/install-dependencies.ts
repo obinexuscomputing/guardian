@@ -1,66 +1,84 @@
 import { execSync } from 'child_process';
 import { writeFileSync } from 'fs';
 
+// First, install system dependencies for canvas and other packages
+const installSystemDependencies = () => {
+  try {
+    console.log('📦 Installing system dependencies...');
+    execSync('sudo apt-get update && sudo apt-get install -y \
+      build-essential \
+      libcairo2-dev \
+      libpango1.0-dev \
+      libjpeg-dev \
+      libgif-dev \
+      librsvg2-dev \
+      pkg-config', 
+      { stdio: 'inherit' }
+    );
+  } catch (error) {
+    console.warn('⚠️ Could not install system dependencies. You may need to install them manually.');
+  }
+};
+
 const dependencies = {
-  // Core dependencies
+  // Core dependencies with known working versions
   main: [
-    'canvas@2.11.2',
-    'sharp@0.32.6',
-    'winston@3.11.0',
-    'date-fns@2.30.0'
+    'canvas@2.10.2', // Using older version for better compatibility
+    'sharp@0.31.3',
+    'winston@3.8.2',
+    'date-fns@2.29.3'
   ],
   // ML dependencies
   ml: [
-    '@tensorflow/tfjs-node@4.15.0',
-    '@tensorflow-models/mobilenet@2.1.1',
-    'ml-matrix@6.10.7',
+    '@tensorflow/tfjs-node@4.10.0',
+    '@tensorflow-models/mobilenet@2.1.0',
+    'ml-matrix@6.10.4',
     'ml-random-forest@2.1.0',
-    'onnxruntime-node@1.16.3',
-    'mathjs@12.2.1'
+    'onnxruntime-node@1.14.0',
+    'mathjs@11.8.2'
   ],
   // Build dependencies
   build: [
-    '@rollup/plugin-commonjs@25.0.7',
-    '@rollup/plugin-json@6.0.1',
-    '@rollup/plugin-node-resolve@15.2.3',
-    '@rollup/plugin-terser@0.4.4',
-    '@rollup/plugin-typescript@11.1.5',
-    'rollup@4.9.2',
-    'rollup-plugin-dts@6.1.0',
-    'rollup-plugin-visualizer@5.12.0'
+    '@rollup/plugin-commonjs@24.1.0',
+    '@rollup/plugin-json@6.0.0',
+    '@rollup/plugin-node-resolve@15.0.2',
+    '@rollup/plugin-terser@0.4.3',
+    '@rollup/plugin-typescript@11.1.0',
+    'rollup@3.21.0',
+    'rollup-plugin-dts@5.3.0',
+    'rollup-plugin-visualizer@5.9.0'
   ],
   // TypeScript and types
   typescript: [
-    'typescript@5.3.3',
-    'tslib@2.6.2',
-    'ts-node@10.9.2',
+    'typescript@5.0.4',
+    'tslib@2.5.0',
+    'ts-node@10.9.1',
     'ts-node-dev@2.0.0',
-    '@types/node@20.10.5',
-    '@types/jest@29.5.11',
-    '@types/sharp@0.32.0',
-    '@types/benchmark@2.1.5'
+    '@types/node@18.16.3',
+    '@types/jest@29.5.1',
+    '@types/benchmark@2.1.2'
   ],
   // Testing
   testing: [
-    'jest@29.7.0',
-    'ts-jest@29.1.1',
+    'jest@29.5.0',
+    'ts-jest@29.1.0',
     'benchmark@2.1.4'
   ],
   // Linting and formatting
   linting: [
-    'eslint@8.56.0',
-    '@typescript-eslint/eslint-plugin@6.16.0',
-    '@typescript-eslint/parser@6.16.0',
-    'prettier@3.1.1',
-    'eslint-config-prettier@9.1.0',
-    'eslint-plugin-prettier@5.1.2'
+    'eslint@8.39.0',
+    '@typescript-eslint/eslint-plugin@5.59.2',
+    '@typescript-eslint/parser@5.59.2',
+    'prettier@2.8.8',
+    'eslint-config-prettier@8.8.0',
+    'eslint-plugin-prettier@4.2.1'
   ],
   // Development tools
   tools: [
     'husky@8.0.3',
-    'lint-staged@15.2.0',
-    'rimraf@5.0.5',
-    'typedoc@0.25.4'
+    'lint-staged@13.2.2',
+    'rimraf@5.0.0',
+    'typedoc@0.24.7'
   ]
 };
 
@@ -68,32 +86,72 @@ async function installDependencies() {
   try {
     console.log('🚀 Starting dependency installation...');
 
+    // Install system dependencies first
+    installSystemDependencies();
+
     // Clean existing installations
     console.log('🧹 Cleaning existing installations...');
     execSync('rm -rf node_modules package-lock.json', { stdio: 'inherit' });
 
-    // Install core dependencies
-    console.log('📦 Installing core dependencies...');
-    execSync(`npm install --save ${dependencies.main.join(' ')}`, { stdio: 'inherit' });
+    // Create temporary package.json with exact versions
+    const packageJson = {
+      name: "@obinexuscomputing/guardian",
+      version: "1.0.0",
+      main: "dist/index.js",
+      module: "dist/index.mjs",
+      types: "dist/index.d.ts",
+      files: ["dist"],
+      scripts: {
+        "postinstall": "node scripts/install-dependencies.js",
+        "build": "rollup -c",
+        "test": "jest",
+        "lint": "eslint . --ext .ts",
+        "format": "prettier --write \"src/**/*.ts\""
+      },
+      dependencies: {},
+      devDependencies: {},
+      engines: {
+        "node": ">=16.0.0",
+        "npm": ">=8.0.0"
+      }
+    };
 
-    // Install ML dependencies
-    console.log('🧠 Installing ML dependencies...');
-    execSync(`npm install --save ${dependencies.ml.join(' ')}`, { stdio: 'inherit' });
+    // Add exact versions to package.json
+    for (const dep of dependencies.main) {
+      const [name, version] = dep.split('@');
+      packageJson.dependencies[name] = version;
+    }
+    
+    for (const dep of [...dependencies.ml]) {
+      const [name, version] = dep.split('@');
+      packageJson.dependencies[name] = version;
+    }
 
-    // Install dev dependencies
-    console.log('🛠️ Installing development dependencies...');
-    const devDeps = [
+    for (const dep of [
       ...dependencies.build,
       ...dependencies.typescript,
       ...dependencies.testing,
       ...dependencies.linting,
       ...dependencies.tools
-    ];
-    execSync(`npm install --save-dev ${devDeps.join(' ')}`, { stdio: 'inherit' });
+    ]) {
+      const [name, version] = dep.split('@');
+      packageJson.devDependencies[name] = version;
+    }
+
+    // Write temporary package.json
+    writeFileSync('package.json', JSON.stringify(packageJson, null, 2));
+
+    // Install dependencies with legacy peer deps flag and force
+    console.log('📦 Installing dependencies...');
+    execSync('npm install --legacy-peer-deps --force', { stdio: 'inherit' });
 
     // Setup git hooks
     console.log('🪝 Setting up git hooks...');
-    execSync('npm run prepare', { stdio: 'inherit' });
+    try {
+      execSync('npm run prepare', { stdio: 'inherit' });
+    } catch (error) {
+      console.warn('⚠️ Could not setup git hooks. You may need to run npm run prepare manually.');
+    }
 
     console.log('✅ All dependencies installed successfully!');
 
