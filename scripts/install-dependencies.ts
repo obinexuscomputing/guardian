@@ -56,7 +56,8 @@ const dependencies = {
     'ts-node-dev@2.0.0',
     '@types/node@18.16.3',
     '@types/jest@29.5.1',
-    '@types/benchmark@2.1.2'
+    '@types/benchmark@2.1.2',
+    '@types/node'
   ],
   // Testing
   testing: [
