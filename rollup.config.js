@@ -5,7 +5,10 @@ import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import terser from '@rollup/plugin-terser';
 import dts from 'rollup-plugin-dts';
-import pkg from './package.json' assert { type: "json" };
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const pkg = require('./package.json');
 
 const external = [
   ...Object.keys(pkg.dependencies || {}),
