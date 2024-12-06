@@ -31,7 +31,8 @@ const commonPlugins = [
   typescript({
     tsconfig: './tsconfig.json',
     declaration: true,
-    declarationDir: './dist/types'
+    declarationDir: './dist/types',
+    rootDir: 'src'
   })
 ];
 
@@ -41,14 +42,16 @@ export default defineConfig([
     input: 'src/index.ts',
     output: [
       {
-        file: pkg.main,
+        file: 'dist/index.js',
         format: 'cjs',
-        sourcemap: true
+        sourcemap: true,
+        dir: 'dist'
       },
       {
-        file: pkg.module,
+        file: 'dist/index.mjs',
         format: 'esm',
-        sourcemap: true
+        sourcemap: true,
+        dir: 'dist'
       }
     ],
     external,
@@ -65,12 +68,14 @@ export default defineConfig([
       {
         file: 'dist/plugins/index.js',
         format: 'cjs',
-        sourcemap: true
+        sourcemap: true,
+        dir: 'dist/plugins'
       },
       {
         file: 'dist/plugins/index.mjs',
         format: 'esm',
-        sourcemap: true
+        sourcemap: true,
+        dir: 'dist/plugins'
       }
     ],
     external,
@@ -80,7 +85,11 @@ export default defineConfig([
   // Types bundle
   {
     input: './dist/types/index.d.ts',
-    output: [{ file: 'dist/index.d.ts', format: 'esm' }],
+    output: [{ 
+      file: 'dist/index.d.ts', 
+      format: 'esm',
+      dir: 'dist'
+    }],
     plugins: [dts()],
     external
   },
@@ -88,7 +97,11 @@ export default defineConfig([
   // Plugin types bundle
   {
     input: './dist/types/plugins/index.d.ts',
-    output: [{ file: 'dist/plugins/index.d.ts', format: 'esm' }],
+    output: [{ 
+      file: 'dist/plugins/index.d.ts', 
+      format: 'esm',
+      dir: 'dist/plugins'
+    }],
     plugins: [dts()],
     external
   }

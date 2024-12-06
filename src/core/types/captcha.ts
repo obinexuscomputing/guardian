@@ -1,5 +1,3 @@
-// src/core/types/captcha.ts
-
 export type ImageFormat = 'png' | 'jpeg' | 'jpg';
 
 export interface TextOptions {
@@ -29,6 +27,7 @@ export interface CaptchaRenderOptions {
   textOptions?: TextOptions;
   noiseLevel?: number;
   distortionLevel?: number;
+  format?: ImageFormat;
 }
 
 export interface CaptchaGenerationResult {
