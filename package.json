@@ -8,6 +8,9 @@
         "dist"
     ],
     "scripts": {
+        "postinstall": "ts-node scripts/install-dependencies.ts",
+        "install:clean": "rimraf node_modules package-lock.json && npm install",
+        "install:force": "npm run install:clean -- --force",
         "build": "rollup -c",
         "dev": "rollup -c -w",
         "clean": "rimraf dist",
@@ -24,10 +27,8 @@
         "docs": "typedoc --out docs src",
         "benchmark": "ts-node scripts/benchmark.ts",
         "analyze": "rollup -c rollup.config.analyze.js",
-        "start:dev": "ts-node-dev --respawn src/index.ts",
-        "preversion": "npm run test && npm run build",
-        "postversion": "git push && git push --tags"
-    },
+        "start:dev": "ts-node-dev --respawn src/index.ts"
+      },
     "lint-staged": {
         "*.ts": [
             "eslint --fix",
