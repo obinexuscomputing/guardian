@@ -20,7 +20,6 @@ const external = [
   'crypto'
 ];
 
-// Common plugins used across all builds
 const commonPlugins = [
   resolve({
     preferBuiltins: true,
@@ -31,77 +30,39 @@ const commonPlugins = [
   typescript({
     tsconfig: './tsconfig.json',
     declaration: true,
-    declarationDir: './dist/types',
-    rootDir: 'src'
+    declarationDir: './dist/types'
   })
 ];
 
 export default defineConfig([
-  // Core library bundle
   {
     input: 'src/index.ts',
-    output: [
-      {
-        file: 'dist/index.js',
-        format: 'cjs',
-        sourcemap: true,
-        dir: 'dist'
-      },
-      {
-        file: 'dist/index.mjs',
-        format: 'esm',
-        sourcemap: true,
-        dir: 'dist'
-      }
-    ],
+    output: {
+      dir: 'dist',
+      format: 'esm',
+      preserveModules: true,
+      preserveModulesRoot: 'src',
+      sourcemap: true
+    },
     external,
-    plugins: [
-      ...commonPlugins,
-      terser()
-    ]
+    plugins: [...commonPlugins]
   },
-
-  // Plugin system bundle
   {
-    input: 'src/plugins/index.ts',
-    output: [
-      {
-        file: 'dist/plugins/index.js',
-        format: 'cjs',
-        sourcemap: true,
-        dir: 'dist/plugins'
-      },
-      {
-        file: 'dist/plugins/index.mjs',
-        format: 'esm',
-        sourcemap: true,
-        dir: 'dist/plugins'
-      }
-    ],
+    input: 'src/index.ts',
+    output: {
+      file: 'dist/index.cjs',
+      format: 'cjs',
+      sourcemap: true
+    },
     external,
-    plugins: commonPlugins
+    plugins: [...commonPlugins, terser()]
   },
-
-  // Types bundle
   {
     input: './dist/types/index.d.ts',
-    output: [{ 
-      file: 'dist/index.d.ts', 
-      format: 'esm',
-      dir: 'dist'
-    }],
-    plugins: [dts()],
-    external
-  },
-
-  // Plugin types bundle
-  {
-    input: './dist/types/plugins/index.d.ts',
-    output: [{ 
-      file: 'dist/plugins/index.d.ts', 
-      format: 'esm',
-      dir: 'dist/plugins'
-    }],
+    output: {
+      file: 'dist/index.d.ts',
+      format: 'esm'
+    },
     plugins: [dts()],
     external
   }

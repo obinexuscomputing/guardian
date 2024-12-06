@@ -14,14 +14,13 @@
     "declaration": true,
     "declarationDir": "./dist/types",
     "sourceMap": true,
-    "baseUrl": "src",
+    "baseUrl": "./src",
     "paths": {
+      "@/*": ["./*"],
       "@core/*": ["core/*"],
       "@services/*": ["services/*"],
-      "@api/*": ["api/*"],
-      "@types/*": ["core/types/*"],
-      "@utils/*": ["core/utils/*"],
-      "@config/*": ["core/config/*"]
+      "@plugins/*": ["plugins/*"],
+      "@types/*": ["types/*"]
     }
   },
   "include": ["src/**/*"],
