@@ -1,7 +1,5 @@
-// src/services/captcha/renderer.ts
-
 import { Canvas, createCanvas, CanvasRenderingContext2D } from 'canvas';
-import { BackgroundOptions, CaptchaRenderOptions, ImageFormat, TextOptions } from '@core/types';
+import { CaptchaRenderOptions, ImageFormat, TextOptions, BackgroundOptions } from '@core/types/captcha';
 
 export class CaptchaRenderer {
   private canvas: Canvas;
@@ -16,11 +14,15 @@ export class CaptchaRenderer {
     // Clear canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     
-    // Apply background
-    await this.renderBackground(options.background);
+    // Apply background with null check
+    if (options.background) {
+      await this.renderBackground(options.background);
+    }
     
-    // Render text
-    await this.renderText(options.text, options.textOptions);
+    // Render text with null check
+    if (options.textOptions) {
+      await this.renderText(options.text, options.textOptions);
+    }
     
     // Apply noise and distortion
     if (options.noiseLevel) {
@@ -32,18 +34,6 @@ export class CaptchaRenderer {
     }
 
     return this.canvas;
-  }
-
-  public export(format: ImageFormat = 'png'): Buffer {
-    switch (format.toLowerCase()) {
-      case 'png':
-        return this.canvas.toBuffer('image/png');
-      case 'jpeg':
-      case 'jpg':
-        return this.canvas.toBuffer('image/jpeg');
-      default:
-        throw new Error(`Unsupported format: ${format}`);
-    }
   }
 
   private async renderBackground(options: BackgroundOptions): Promise<void> {
@@ -60,5 +50,17 @@ export class CaptchaRenderer {
 
   private async applyDistortion(level: number): Promise<void> {
     // Distortion implementation
+  }
+
+  public export(format: ImageFormat = 'png'): Buffer {
+    switch (format.toLowerCase()) {
+      case 'png':
+        return this.canvas.toBuffer('image/png');
+      case 'jpeg':
+      case 'jpg':
+        return this.canvas.toBuffer('image/jpeg');
+      default:
+        throw new Error(`Unsupported format: ${format}`);
+    }
   }
 }
