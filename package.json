@@ -24,7 +24,8 @@
       "*.ts": [
         "eslint --fix",
         "prettier --write"
-      ],
+      ]
+    },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-json": "^6.1.0",
